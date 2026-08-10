@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🚀 太空閃躲者 - Space Dodger</title>
     <style>
+        :root {
+            --void: #05060d;
+            --panel: #10142a;
+            --panel-edge: #232a52;
+            --screen-top: #060913;
+            --screen-bottom: #12183a;
+            --cyan: #5eead4;
+            --cyan-dim: #2f9c8a;
+            --gold: #f5c451;
+            --gold-dim: #c98f2e;
+            --danger: #fb5b6e;
+            --danger-dim: #e03a52;
+            --ink: #eef2ff;
+            --ink-dim: #8b93b8;
+            --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            --display: 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,75 +34,98 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Arial', sans-serif;
+            background:
+                radial-gradient(ellipse at 50% -10%, #1a2050 0%, transparent 55%),
+                var(--void);
+            font-family: var(--display);
+            color: var(--ink);
         }
 
         .container {
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
+            background: linear-gradient(180deg, var(--panel) 0%, #0a0d1e 100%);
+            padding: 22px 26px 26px;
+            border-radius: 22px;
+            border: 1px solid var(--panel-edge);
+            box-shadow:
+                0 0 0 1px rgba(94, 234, 212, 0.06),
+                0 30px 60px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
         }
 
         h1 {
-            color: #fff;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: var(--ink);
+            margin-bottom: 14px;
+            font-size: 1.9em;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-shadow: 0 0 18px rgba(94, 234, 212, 0.45);
         }
 
         canvas {
-            border: 5px solid #fff;
+            border: 2px solid var(--panel-edge);
             display: block;
-            background: linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(to bottom, var(--screen-top) 0%, var(--screen-bottom) 100%);
             cursor: crosshair;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow:
+                inset 0 0 40px rgba(0, 0, 0, 0.6),
+                0 0 24px rgba(94, 234, 212, 0.12);
             border-radius: 10px;
-            margin: 20px auto;
+            margin: 18px auto;
         }
 
         .info {
             display: flex;
             justify-content: space-around;
-            color: #fff;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-family: var(--mono);
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05em;
+            color: var(--ink-dim);
+            letter-spacing: 0.03em;
         }
 
-        .score, .level, .hp {
-            font-weight: bold;
+        .info div {
+            display: flex;
+            gap: 0.5em;
         }
+
+        .score { color: var(--gold); font-weight: 700; }
+        .level { color: var(--cyan); font-weight: 700; }
+        .hp { font-weight: 700; }
 
         .controls {
-            color: #fff;
-            margin-top: 15px;
-            font-size: 0.9em;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: var(--ink-dim);
+            margin-top: 14px;
+            font-size: 0.85em;
+            font-family: var(--mono);
+            line-height: 1.6;
         }
 
         button {
-            margin-top: 15px;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50px;
+            margin-top: 16px;
+            padding: 11px 28px;
+            font-family: var(--display);
+            font-size: 1em;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: transparent;
+            color: var(--cyan);
+            border: 1.5px solid var(--cyan-dim);
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.15s ease;
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            background: rgba(94, 234, 212, 0.1);
+            border-color: var(--cyan);
+            box-shadow: 0 0 16px rgba(94, 234, 212, 0.35);
         }
 
         button:active {
-            transform: translateY(0);
+            transform: translateY(1px);
         }
 
         .game-over {
@@ -92,66 +133,74 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            color: #fff;
-            padding: 40px;
-            border-radius: 20px;
+            background: linear-gradient(180deg, var(--panel) 0%, #0a0d1e 100%);
+            color: var(--ink);
+            padding: 40px 44px;
+            border-radius: 18px;
+            border: 1px solid var(--panel-edge);
             text-align: center;
             display: none;
             z-index: 1000;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            box-shadow:
+                0 0 0 1px rgba(251, 91, 110, 0.1),
+                0 30px 70px rgba(0, 0, 0, 0.7);
         }
 
         .game-over h2 {
-            font-size: 2.5em;
+            font-size: 1.8em;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
             margin-bottom: 20px;
-            color: #ff6b6b;
+            color: var(--danger);
+            text-shadow: 0 0 20px rgba(251, 91, 110, 0.4);
         }
 
         .game-over p {
-            font-size: 1.2em;
+            font-size: 1.1em;
             margin: 10px 0;
+            font-family: var(--mono);
+            color: var(--ink-dim);
+        }
+
+        .game-over strong {
+            color: var(--gold);
+            font-variant-numeric: tabular-nums;
         }
 
         .game-over button {
             margin-top: 20px;
         }
 
-        .emoji {
-            font-size: 1.2em;
-            display: inline-block;
-        }
-
         .tip {
-            color: #ffd700;
-            font-size: 0.85em;
+            color: var(--gold-dim);
+            font-size: 0.8em;
             margin-top: 10px;
-            font-style: italic;
+            font-family: var(--mono);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 太空閃躲者</h1>
+        <h1>太空閃躲者</h1>
         <div class="info">
-            <div>分數: <span class="score">0</span></div>
-            <div>等級: <span class="level">1</span></div>
-            <div>生命: <span class="hp">❤️ ❤️ ❤️</span></div>
+            <div>SCORE <span class="score">0</span></div>
+            <div>LV <span class="level">1</span></div>
+            <div>HP <span class="hp">❤️❤️❤️</span></div>
         </div>
         <canvas id="gameCanvas" width="600" height="600"></canvas>
         <div class="controls">
-            <p>🖱️ 移動滑鼠控制太空船</p>
-            <p>⭐ 收集金星加分 | ⚠️ 閃躲隕石</p>
+            <p>移動滑鼠控制太空船 · 收集金星加分 · 閃躲隕石</p>
         </div>
-        <button onclick="location.reload()">🔄 重新開始</button>
-        <div class="tip">💡 等級越高隕石越多越快！</div>
+        <button onclick="location.reload()">重新開始</button>
+        <div class="tip">等級越高，隕石越多越快</div>
     </div>
 
     <div class="game-over" id="gameOverScreen">
-        <h2 id="gameOverTitle">遊戲結束 😢</h2>
-        <p>最終分數: <strong id="finalScore">0</strong></p>
-        <p>達到等級: <strong id="finalLevel">1</strong></p>
-        <button onclick="location.reload()">再玩一次 🎮</button>
+        <h2 id="gameOverTitle">遊戲結束</h2>
+        <p>最終分數 <strong id="finalScore">0</strong></p>
+        <p>達到等級 <strong id="finalLevel">1</strong></p>
+        <button onclick="location.reload()">再玩一次</button>
     </div>
 
     <script>
@@ -222,7 +271,7 @@
                 ctx.translate(this.x + this.size / 2, this.y + this.size / 2);
                 ctx.rotate(this.rotation);
 
-                ctx.fillStyle = '#ff6b6b';
+                ctx.fillStyle = '#fb5b6e';
                 ctx.beginPath();
                 for (let i = 0; i < 6; i++) {
                     const angle = (i / 6) * Math.PI * 2;
@@ -233,7 +282,7 @@
                 }
                 ctx.closePath();
                 ctx.fill();
-                ctx.strokeStyle = '#ff4757';
+                ctx.strokeStyle = '#e03a52';
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
@@ -270,7 +319,7 @@
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                ctx.fillStyle = '#ffd700';
+                ctx.fillStyle = '#f5c451';
                 ctx.beginPath();
                 for (let i = 0; i < 5; i++) {
                     const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
@@ -286,7 +335,7 @@
                 }
                 ctx.closePath();
                 ctx.fill();
-                ctx.strokeStyle = '#ffaa00';
+                ctx.strokeStyle = '#c98f2e';
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
@@ -307,7 +356,7 @@
             ctx.translate(game.playerX, game.playerY);
 
             // 船身
-            ctx.fillStyle = '#00ffff';
+            ctx.fillStyle = '#5eead4';
             ctx.beginPath();
             ctx.moveTo(0, -25);
             ctx.lineTo(15, 20);
@@ -316,13 +365,13 @@
             ctx.closePath();
             ctx.fill();
 
-            ctx.strokeStyle = '#00aa88';
+            ctx.strokeStyle = '#2f9c8a';
             ctx.lineWidth = 2;
             ctx.stroke();
 
             // 火焰
             const flameHeight = 15 + Math.sin(Date.now() / 50) * 5;
-            ctx.fillStyle = 'rgba(255, 100, 0, 0.7)';
+            ctx.fillStyle = 'rgba(245, 196, 81, 0.75)';
             ctx.beginPath();
             ctx.moveTo(-8, 10);
             ctx.lineTo(-3, 10 + flameHeight);
@@ -402,7 +451,7 @@
                         particles.push(new Particle(
                             game.playerX, game.playerY,
                             (Math.random() - 0.5) * 4, Math.random() * 2 - 4,
-                            'rgb(255, 100, 100)', 20
+                            'rgb(251, 91, 110)', 20
                         ));
                     }
                     obstacles.splice(i, 1);
@@ -431,7 +480,7 @@
                         particles.push(new Particle(
                             rewards[i].x, rewards[i].y,
                             (Math.random() - 0.5) * 6, Math.random() * 2 - 4,
-                            'rgb(255, 215, 0)', 25
+                            'rgb(245, 196, 81)', 25
                         ));
                     }
                     rewards.splice(i, 1);
