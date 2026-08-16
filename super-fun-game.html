@@ -634,10 +634,6 @@
                         ));
                     }
                     rewards.splice(i, 1);
-
-                    if (game.score % 100 === 0) {
-                        game.level++;
-                    }
                     continue;
                 }
 
@@ -645,6 +641,9 @@
                     rewards.splice(i, 1);
                 }
             }
+
+            // 根據分數更新等級
+            game.level = Math.floor(game.score / 100) + 1;
 
             // 繪製玩家
             drawPlayer();
